@@ -21,7 +21,7 @@
 | VERSION | 1.5.6  | 可以修改成yapi已发布的版本   |
 | HOME | /home | 可修改 |  
 | PORT | 3000  | 可修改 | 
-| ADMIN_EMAIL | me@jinfeijie.cn  | 建议修改 | 
+| ADMIN_EMAIL | admin@admin.com  | 建议修改 | 
 | DB_SERVER | mongo(127.0.0.1)  | 不建议修改 |
 | DB_NAME | yapi  | 不建议修改 |
 | DB_PORT | 27017 | 不建议修改|
@@ -44,7 +44,7 @@ services:
       - LOG_PATH=/tmp/yapi.log
       - HOME=/home
       - PORT=3000
-      - ADMIN_EMAIL=me@jinfeijie.cn
+      - ADMIN_EMAIL=admin@admin.com
       - DB_SERVER=mongo
       - DB_NAME=yapi
       - DB_PORT=27017
@@ -95,7 +95,7 @@ server {
 
 2. 创建network：`docker network create back-net`
 
-3. 启动服务：`docker-compose -d`
+3. 启动服务：`docker-compose up -d`
 
 
 ## 其他

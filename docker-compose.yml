@@ -2,22 +2,22 @@ version: '2.1'
 services:
   yapi:
     image: mrjin/yapi:latest
-#    build: ./
     container_name: yapi
     environment:
       - VERSION=1.5.6
       - LOG_PATH=/tmp/yapi.log
       - HOME=/home
       - PORT=3000
-      - ADMIN_EMAIL=me@jinfeijie.cn
+      - ADMIN_EMAIL=admin@admin.com
       - DB_SERVER=mongo
       - DB_NAME=yapi
       - DB_PORT=27017
-    # restart: always
+    restart: always
+    hostname: localhost
     ports:
-      - 127.0.0.1:3000:3000
+      - 3000:3000
     volumes:
-      - ~/data/yapi/log/yapi.log:/home/vendors/log # log dir
+      - ~/.docker/yapi/log/yapi.log:/home/vendors/log # log dir
     depends_on:
       - mongo
     entrypoint: "bash /wait-for-it.sh mongo:27017 -- entrypoint.sh"
@@ -26,11 +26,44 @@ services:
   mongo:
     image: mongo
     container_name: mongo
-    # restart: always
+    hostname: localhost
+    restart: always
     ports:
-      - 127.0.0.1:27017:27017
+      - 27017:27017
     volumes:
-      - ~/data/yapi/mongodb:/data/db #db dir
+      - ~/.docker/yapi/mongodb:/data/db #db dir
+    networks:
+      - back-net
+  gitlab:
+    image: gitlab/gitlab-ce:latest   
+    container_name: gitlab
+    hostname: localhost 
+    restart: always
+    environment:
+        TZ: 'Asia/Shanghai'
+        GITLAB_OMNIBUS_CONFIG: |
+          gitlab_rails['time_zone'] = 'Asia/Shanghai'
+          # gitlab_rails['smtp_enable'] = true
+          # gitlab_rails['smtp_address'] = "smtp.163.com"
+          # gitlab_rails['smtp_port'] = 465
+          # gitlab_rails['smtp_user_name'] = "505418722@qq.com"
+          # gitlab_rails['smtp_password'] = "授权码"
+          # gitlab_rails['smtp_domain'] = "163.com"
+          # gitlab_rails['smtp_authentication'] = "login"
+          # gitlab_rails['smtp_enable_starttls_auto'] = true
+          gitlab_rails['smtp_tls'] = true
+          gitlab_rails['gitlab_email_from'] = '505418722@qq.com'
+          gitlab_rails['gitlab_shell_ssh_port'] = 22
+    ports:
+      - '4443:443'
+      - '8888:80'
+      - '2222:22'
+    volumes:
+      - ~/.docker/gitlab/config:/etc/gitlab
+    volumes:  
+      - ~/.docker/gitlab/log:/var/log/gitlab 
+    volumes:  
+      - ~/.docker/gitlab/data:/var/opt/gitlab
     networks:
       - back-net
 networks:
